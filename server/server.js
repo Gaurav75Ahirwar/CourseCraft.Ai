@@ -2,6 +2,17 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
+const dns = require("dns");
+const dnsServers = process.env.MONGODB_DNS_SERVERS?.split(",")
+    .map((server) => server.trim())
+    .filter(Boolean);
+
+if (dnsServers?.length) {
+    dns.setServers(dnsServers);
+}
+
+const connectDB = require("./config/db");
+
 const app = express();
 
 app.use(cors());
@@ -13,6 +24,12 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(5000, () => {
-    console.log(`Server is running on port ${PORT}...`);
-});
+const startServer = async () => {
+    await connectDB();
+
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}...`);
+    });
+};
+
+startServer();
