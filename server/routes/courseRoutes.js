@@ -73,4 +73,23 @@ router.patch("/:id", async (req, res) => {
     }
 });
 
+// Delete a course
+router.delete("/:id", async (req, res) => {
+    try {
+        const course = await Course.findByIdAndDelete(req.params.id);
+
+        if (!course) {
+            return res.status(400).json({ message: "Course not found" });
+        }
+
+        res.status(200).json({ message: "Course deleted successfully", courseId: course._id });
+    } catch (err) {
+        if (err.name === "CastError") {
+            return res.status(400).json({ message: "Invalid course ID" });
+        }
+
+        res.status(500).json({ message: "Failed to delete course", error: err.message });
+    }
+});
+
 module.exports = router;
