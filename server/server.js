@@ -12,11 +12,13 @@ if (dnsServers?.length) {
 }
 
 const connectDB = require("./config/db");
+const courseRoutes = require("./routes/courseRoutes");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/courses", courseRoutes);
 
 app.get("/", (req, res) => {
     res.json({ message: "CourseCraft.Ai backend is running" });
