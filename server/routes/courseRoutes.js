@@ -45,4 +45,32 @@ router.post("/", async (req, res) => {
     }
 });
 
+// Update a course
+router.patch("/:id", async (req, res) => {
+    try {
+        const { title, description, tags } = req.body;
+
+        const course = await Course.findByIdAndUpdate(
+            req.params.id,
+            { title, description, tags },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
+
+        res.status(200).json({ message: "Course updated successfully", course });
+    } catch (err) {
+        if (err.name === "CastError") {
+            return res.status(400).json({ message: "Invalid course ID" });
+        }
+
+        res.status(400).json({ message: "Failed to update course", error: err.message });
+    }
+});
+
 module.exports = router;
