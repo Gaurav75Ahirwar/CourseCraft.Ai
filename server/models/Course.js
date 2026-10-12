@@ -5,7 +5,8 @@ const courseSchema = new mongoose.Schema(
         title: {
             type: String,
             required: true,
-            trim: true
+            trim: true,
+            minLength: [1, "Course title cannot be empty"]
         },
         description: {
             type: String,
