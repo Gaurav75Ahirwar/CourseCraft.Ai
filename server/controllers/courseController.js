@@ -34,7 +34,7 @@ const getCourseById = async (req, res) => {
         const course = await Course.findById(req.params.id);
 
         if (!course) {
-            return res.status(400).json({ message: "Course not found" });
+            return res.status(404).json({ message: "Course not found" });
         }
 
         res.status(200).json(course);
@@ -43,7 +43,7 @@ const getCourseById = async (req, res) => {
             return res.status(400).json({ message: "Invalid course ID" });
         }
 
-        res.status(500).json({ message: "Failed to fetch course", error: err.message });
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 
@@ -68,7 +68,11 @@ const updateCourse = async (req, res) => {
             return res.status(400).json({ message: "Invalid course ID" });
         }
 
-        res.status(400).json({ message: "Failed to update course", error: err.message });
+        if (err.name === "ValidationError") {
+            return res.status(400).json({ message: "Invalid course data", errors: Object.values(err.errors).map((error) => error.message) });
+        }
+
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 
@@ -78,7 +82,7 @@ const deleteCourse = async (req, res) => {
         const course = await Course.findByIdAndDelete(req.params.id);
 
         if (!course) {
-            return res.status(400).json({ message: "Course not found" });
+            return res.status(404).json({ message: "Course not found" });
         }
 
         res.status(200).json({ message: "Course deleted successfully", courseId: course._id });
