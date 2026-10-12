@@ -40,7 +40,7 @@ const getCourseById = async (req, res) => {
         res.status(200).json(course);
     } catch (err) {
         if (err.name === "CastError") {
-            return res.status(400).json({ message: "Invalid course id" });
+            return res.status(400).json({ message: "Invalid course ID" });
         }
 
         res.status(500).json({ message: "Failed to fetch course", error: err.message });
