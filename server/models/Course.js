@@ -17,7 +17,7 @@ const courseSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        modules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Modules' }],
+        modules: [{ type: mongoose.Schema.Types.ObjectId, ref: "Modules" }],
         tags: [{ type: String, trim: true }]
     },
     { timestamps: true }
