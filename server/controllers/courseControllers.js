@@ -9,7 +9,11 @@ const createCourse = async (req, res) => {
 
         res.status(201).json({ message: "Course created successfully", course });
     } catch (err) {
-        res.status(400).json({ message: "Failed to create course", error: err.message });
+        if (err.name === "ValidationError") {
+            return res.status(400).json({ message: "Invalid course data", errors: Object.values(err.errors).map((error) => error.message) });
+        }
+
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 
