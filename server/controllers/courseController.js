@@ -50,6 +50,16 @@ const getCourseById = async (req, res) => {
 // Update a course
 const updateCourse = async (req, res) => {
     try {
+        const updates = {};
+        for (const field of ["title", "description", "tags"]) {
+            if (req.body !== undefined) {
+                updates[field] = req.body[field];
+            }
+        }
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ message: "No fields provided for update" });
+        }
+
         const { title, description, tags } = req.body;
 
         const course = await Course.findByIdAndUpdate(
