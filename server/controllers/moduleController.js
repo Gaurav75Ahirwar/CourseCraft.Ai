@@ -1,5 +1,6 @@
-const Module = require("../models/Module");
 const Course = require("../models/Course");
+const Module = require("../models/Module");
+const Lesson = require("../models/Lesson");
 
 // Create a module
 const createModule = async (req, res) => {
@@ -67,6 +68,9 @@ const getModuleById = async (req, res) => {
 const updateModule = async (req, res) => {
     try {
         const { title } = req.body;
+        if (title === undefined) {
+            return res.status(400).json({ message: "New title is required for update" });
+        }
 
         const module = await Module.findByIdAndUpdate(
             req.params.id,
@@ -95,13 +99,15 @@ const updateModule = async (req, res) => {
 // Delete a module
 const deleteModule = async (req, res) => {
     try {
-        const module = await Module.findByIdAndDelete(req.params.id);
+        const module = await Module.findById(req.params.id);
 
         if (!module) {
             return res.status(404).json({ message: "Module not found" });
         }
 
+        await Lesson.deleteMany({ module: module._id });
         await Course.findByIdAndUpdate(module.course, { $pull: { modules: module._id } });
+        await Module.findByIdAndDelete(module._id);
 
         res.status(200).json({ message: "Module deleted successfully", moduleId: module._id });
     } catch (err) {
