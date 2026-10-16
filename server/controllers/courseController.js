@@ -47,7 +47,8 @@ const getAllCourses = async (req, res) => {
 // Get one Course by ID
 const getCourseById = async (req, res) => {
     try {
-        const course = await Course.findById(req.params.id);
+        const course = await Course.findById(req.params.id)
+            .populate("modules", "title");
 
         if (!course) {
             return res.status(404).json({
