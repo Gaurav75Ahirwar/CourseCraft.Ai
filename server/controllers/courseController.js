@@ -1,4 +1,6 @@
 const Course = require("../models/Course");
+const Module = require("../models/Module");
+const Lesson = require("../models/Lesson");
 
 // Create a Course
 const createCourse = async (req, res) => {
@@ -31,13 +33,13 @@ const createCourse = async (req, res) => {
 const getAllCourses = async (req, res) => {
     try {
         const courses = await Course.find()
+            .select("title description tags createdat")
             .sort({ createdAt: -1 });
 
         res.status(200).json(courses);
     } catch (err) {
         res.status(500).json({
-            message: "Failed to fetch courses",
-            error: err.message
+            message: "Failed to fetch courses"
         });
     }
 };
