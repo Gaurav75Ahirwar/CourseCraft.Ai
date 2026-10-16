@@ -33,7 +33,7 @@ const createCourse = async (req, res) => {
 const getAllCourses = async (req, res) => {
     try {
         const courses = await Course.find()
-            .select("title description tags createdat")
+            .select("title description tags createdAt")
             .sort({ createdAt: -1 });
 
         res.status(200).json(courses);
