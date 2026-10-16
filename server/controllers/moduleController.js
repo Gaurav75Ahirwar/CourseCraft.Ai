@@ -74,7 +74,8 @@ const getAllModules = async (req, res) => {
 // Get one Module by ID
 const getModuleById = async (req, res) => {
     try {
-        const module = await Module.findById(req.params.id);
+        const module = await Module.findById(req.params.id)
+            .populate("lessons", "title");
 
         if (!module) {
             return res.status(404).json({
