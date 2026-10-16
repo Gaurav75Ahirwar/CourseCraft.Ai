@@ -161,7 +161,6 @@ const deleteLesson = async (req, res) => {
             });
         }
 
-        // Remove the lesson reference from its parent Module
         await Module.findByIdAndUpdate(lesson.module, {
             $pull: { lessons: lesson._id }
         });
