@@ -175,8 +175,7 @@ const deleteModule = async (req, res) => {
         }
 
         res.status(500).json({
-            message: "Failed to delete module",
-            error: err.message
+            message: "Failed to delete module"
         });
     }
 };
