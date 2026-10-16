@@ -128,13 +128,29 @@ const updateCourse = async (req, res) => {
 // Delete a Course
 const deleteCourse = async (req, res) => {
     try {
-        const course = await Course.findByIdAndDelete(req.params.id);
+        const course = await Course.findById(req.params.id);
 
         if (!course) {
             return res.status(404).json({
                 message: "Course not found"
             });
         }
+
+        const modules = await Module.find({
+            course: course._id
+        }).select("_id");
+
+        const moduleIds = modules.map((module) => module._id);
+
+        await Lesson.deleteMany({
+            module: { $in: moduleIds }
+        });
+
+        await Module.deleteMany({
+            course: course._id
+        });
+
+        await Course.findByIdAndDelete(course._id);
 
         res.status(200).json({
             message: "Course deleted successfully",
@@ -148,8 +164,7 @@ const deleteCourse = async (req, res) => {
         }
 
         res.status(500).json({
-            message: "Failed to delete course",
-            error: err.message
+            message: "Failed to delete course"
         });
     }
 };
