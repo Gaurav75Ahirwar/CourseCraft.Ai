@@ -14,6 +14,7 @@ if (dnsServers?.length) {
 const connectDB = require("./config/db");
 const courseRoutes = require("./routes/courseRoutes");
 const moduleRoutes = require("./routes/moduleRoutes");
+const lessonRoutes = require("./routes/lessonRoutes");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/courses", courseRoutes);
 app.use("/api/modules", moduleRoutes);
+app.use("/api/lessons", lessonRoutes);
 
 app.get("/", (req, res) => {
     res.json({ message: "CourseCraft.Ai backend is running" });
