@@ -60,6 +60,7 @@ const createModule = async (req, res) => {
 const getAllModules = async (req, res) => {
     try {
         const modules = await Module.find()
+            .select("title course createdAt")
             .sort({ createdAt: -1 });
 
         res.status(200).json(modules);
