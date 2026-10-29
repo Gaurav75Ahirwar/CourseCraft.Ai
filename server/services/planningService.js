@@ -1,3 +1,4 @@
+const { extractPlanningInfo } = require("./geminiService");
 
 function createPlanningState() {
     return {
@@ -80,7 +81,6 @@ function submitAnswer(state, field, answer) {
     throw new Error("Invalid planning field.");
 }
 
-
 function validatePlanningInfo(info) {
     if (!info || typeof info !== "object" || Array.isArray(info)) {
         throw new Error("Invalid planning information.");
@@ -134,7 +134,6 @@ function validatePlanningInfo(info) {
 }
 
 
-
 function mergePlanningInfo(state, extractedInfo) {
     validatePlanningInfo(extractedInfo);
 
@@ -169,6 +168,23 @@ function mergePlanningInfo(state, extractedInfo) {
     return updatedState;
 }
 
+async function processPlanningMessage(state, message) {
+    if (typeof message !== "string" || !message.trim()) {
+        throw new Error("Message must be a non-empty string.");
+    }
+
+    const extractedInfo = await extractPlanningInfo(message);
+
+    const updatedState = mergePlanningInfo(
+        state,
+        extractedInfo
+    );
+
+    return {
+        planningState: updatedState,
+        nextQuestion: getNextQuestion(updatedState)
+    };
+}
 
 module.exports = {
     createPlanningState,
@@ -176,5 +192,6 @@ module.exports = {
     getNextQuestion,
     submitAnswer,
     mergePlanningInfo,
-    validatePlanningInfo
+    validatePlanningInfo,
+    processPlanningMessage
 };
