@@ -1,7 +1,8 @@
 
 const {
     createPlanningState,
-    mergePlanningInfo
+    mergePlanningInfo,
+    validatePlanningInfo
 } = require("./services/planningService");
 
 const initialState = createPlanningState();
@@ -51,3 +52,39 @@ console.log(
     "Original state unchanged:",
     initialState.topic === null
 );
+
+
+const validInfo = {
+    topic: "Machine Learning",
+    level: "Beginner",
+    priorKnowledge: ["Python"],
+    goals: ["Build projects"],
+    deadline: "six weeks",
+    weeklyTimeAvailability: null
+};
+
+try {
+    validatePlanningInfo(validInfo);
+    console.log("Valid information: passed");
+} catch (error) {
+    console.log("Unexpected error:", error.message);
+}
+
+try {
+    validatePlanningInfo({
+        ...validInfo,
+        level: "Expert"
+    });
+} catch (error) {
+    console.log("Invalid level:", error.message);
+}
+
+try {
+    validatePlanningInfo({
+        ...validInfo,
+        priorKnowledge: "Python"
+    });
+} catch (error) {
+    console.log("Invalid prior knowledge:", error.message);
+}
+

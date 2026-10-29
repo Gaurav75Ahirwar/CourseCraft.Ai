@@ -81,7 +81,63 @@ function submitAnswer(state, field, answer) {
 }
 
 
+function validatePlanningInfo(info) {
+    if (!info || typeof info !== "object" || Array.isArray(info)) {
+        throw new Error("Invalid planning information.");
+    }
+
+    const validLevels = [
+        "Beginner",
+        "Intermediate",
+        "Advanced"
+    ];
+
+    if (
+        info.level != null &&
+        !validLevels.includes(info.level)
+    ) {
+        throw new Error("Invalid level in extracted information.");
+    }
+
+    const scalarFields = [
+        "topic",
+        "deadline",
+        "weeklyTimeAvailability"
+    ];
+
+    for (const field of scalarFields) {
+        if (
+            info[field] != null &&
+            (typeof info[field] !== "string" || !info[field].trim())
+        ) {
+            throw new Error(`Invalid value for ${field}.`);
+        }
+    }
+
+    const arrayFields = ["priorKnowledge", "goals"];
+
+    for (const field of arrayFields) {
+        if (
+            info[field] != null &&
+            (
+                !Array.isArray(info[field]) ||
+                !info[field].every(
+                    item => typeof item === "string" && item.trim()
+                )
+            )
+        ) {
+            throw new Error(`Invalid value for ${field}.`);
+        }
+    }
+
+    return info;
+}
+
+
+
 function mergePlanningInfo(state, extractedInfo) {
+    validatePlanningInfo(extractedInfo);
+
     const updatedState = { ...state };
 
     const scalarFields = [
@@ -119,5 +175,6 @@ module.exports = {
     getMissingFields,
     getNextQuestion,
     submitAnswer,
-    mergePlanningInfo
+    mergePlanningInfo,
+    validatePlanningInfo
 };
