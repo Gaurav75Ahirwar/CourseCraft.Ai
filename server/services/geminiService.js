@@ -69,6 +69,14 @@ Rules:
 - The level must be Beginner, Intermediate, or Advanced.
 - Do not invent information.
 - Return only valid JSON.
+- A topic is the subject the user wants to learn.
+- A goal is a specific outcome the user wants to achieve,
+  such as building a project or preparing for an exam.
+- Do not copy the topic into goals just because the user
+  says they want to learn that topic.
+- Extract prior knowledge only when the user indicates
+  existing knowledge or skills.
+- Extract only information supported by the user's message.
 `;
 
   const response = await ai.models.generateContent({
